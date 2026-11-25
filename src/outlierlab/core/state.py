@@ -5,6 +5,7 @@ from typing import Any
 
 import pandas as pd
 
+from outlierlab.core.detectors.base import DetectorSpec, RunResult
 from outlierlab.core.events import Event
 
 
@@ -19,10 +20,10 @@ class ComparatorState:
     missing_policy: str = "interpolate"  # interpolate | drop | gaps
     events: list[Event] = field(default_factory=list)
 
-    # B: detectors and runs (B replaces Any with real types)
-    detectors: list[Any] = field(default_factory=list)
+    # B: detectors and runs
+    detectors: list[DetectorSpec] = field(default_factory=list)
     seed: int = 42
-    results: dict[str, Any] = field(default_factory=dict)
+    results: dict[str, RunResult] = field(default_factory=dict)
 
     # C: scoring
     tolerance: int = 6
