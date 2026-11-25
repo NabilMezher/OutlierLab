@@ -26,23 +26,23 @@ def test_run_result_validates_alarms_and_runtime():
     res = RunResult(
         detector_key="pelt",
         detector_name="PELT",
-        family="changepoint",
+        family="change",
         alarms=[(10, 10), (20, 25)],
         runtime_s=0.12,
     )
     assert res.status == "done"
 
     with pytest.raises(ValueError):
-        RunResult("pelt", "PELT", "changepoint", alarms=[(-1, 2)])
+        RunResult("pelt", "PELT", "change", alarms=[(-1, 2)])
     with pytest.raises(ValueError):
-        RunResult("pelt", "PELT", "changepoint", alarms=[(10, 5)])
+        RunResult("pelt", "PELT", "change", alarms=[(10, 5)])
     with pytest.raises(ValueError):
-        RunResult("pelt", "PELT", "changepoint", runtime_s=-0.1)
+        RunResult("pelt", "PELT", "change", runtime_s=-0.1)
 
 
-def test_registry_contains_five_changepoint_and_five_anomaly():
+def test_registry_contains_five_change_and_five_anomaly():
     assert len(DETECTOR_REGISTRY) == 10
-    assert len(list_detectors("changepoint")) == 5
+    assert len(list_detectors("change")) == 5
     assert len(list_detectors("anomaly")) == 5
     assert get_detector_meta("iforest").uses_seed is True
 

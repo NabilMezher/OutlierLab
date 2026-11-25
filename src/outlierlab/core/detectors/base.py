@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 AlarmInterval = tuple[int, int]
-DetectorFamily = Literal["changepoint", "anomaly"]
+DetectorFamily = Literal["change", "anomaly"]
 RunStatus = Literal["done", "timed_out", "cancelled", "failed"]
 
 
@@ -51,7 +51,7 @@ class RunResult:
 
 
 class Detector(ABC):
-    """Base interface implemented by all changepoint and anomaly detectors."""
+    """Base interface implemented by all change and anomaly detectors."""
 
     key: str
     name: str
