@@ -1,6 +1,6 @@
 
 # OutlierLab
-![CI](https://github.com/USERNAME/REPO/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/NabilMezher/OutlierLab/actions/workflows/ci.yml/badge.svg)
 
 Offline desktop tool for comparing time-series anomaly and changepoint detectors side by side.
 
