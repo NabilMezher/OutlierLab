@@ -1,0 +1,16 @@
+name: outlierlab
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas>=2
+  - matplotlib
+  - scikit-learn
+  - pyod
+  - ruptures
+  - pytest
+  - pytest-cov
+  - pip
+  - pip:
+      - customtkinter
