@@ -4,6 +4,7 @@ import customtkinter as ctk
 
 from outlierlab.core.state import ComparatorState
 from outlierlab.gui.compare_tab import CompareTab
+from outlierlab.gui.data_tab import DataTab
 from outlierlab.gui.detectors_tab import DetectorsTab
 from outlierlab.gui.run_tab import RunTab
 from outlierlab.gui.settings_window import SettingsWindow
@@ -50,6 +51,8 @@ class App(ctk.CTk):
             self.tabs.add(name)
 
         self.tab_frames: dict[str, object] = {}
+        self.tab_frames["Data"] = DataTab(self.tabs.tab("Data"), self)
+        self.tab_frames["Data"].pack(fill="both", expand=True)
         self.tab_frames["Detectors"] = DetectorsTab(self.tabs.tab("Detectors"), self)
         self.tab_frames["Detectors"].pack(fill="both", expand=True)
         self.tab_frames["Run"] = RunTab(self.tabs.tab("Run"), self)
@@ -57,7 +60,7 @@ class App(ctk.CTk):
         self.tab_frames["Compare"] = CompareTab(self.tabs.tab("Compare"), self)
         self.tab_frames["Compare"].pack(fill="both", expand=True)
 
-        for name in ("Data", "Events", "Scores", "Export"):
+        for name in ("Events", "Scores", "Export"):
             ctk.CTkLabel(self.tabs.tab(name), text=f"{name} tab coming soon").pack(
                 pady=40
             )
