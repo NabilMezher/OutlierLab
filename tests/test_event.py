@@ -1,6 +1,6 @@
 import pytest
 
-from outlierlab.core.events import Event
+from outlierlab.core.events import Event, check_events, events_from_labels
 
 
 def test_point_event_is_valid():
@@ -11,9 +11,6 @@ def test_point_event_is_valid():
 def test_backwards_range_is_rejected():
     with pytest.raises(ValueError):
         Event(10, 3)
-
-
-from outlierlab.core.events import Event, check_events, events_from_labels
 
 
 def test_runs_become_intervals():
