@@ -80,7 +80,10 @@ def test_report_round_trip_and_scores_use_core_not_cached_state(session):
     assert session.scores == {"pelt": {"f1": -100}}
 
 
-def test_default_bundle_has_all_files_and_real_environment(session, tmp_path):
+@pytest.mark.parametrize("freeze_output", [None, "numpy @ file:///conda-build/numpy/work\n"])
+def test_default_bundle_has_all_files_and_real_environment(session, tmp_path, monkeypatch, freeze_output):
+    if freeze_output is not None:
+        monkeypatch.setattr(export, "_pip_freeze", lambda: freeze_output.encode("utf-8"))
     paths = export_session(session, tmp_path / "bundle")
     assert set(paths) == {
         "report.json", "reproduce_run.py", "environment.txt", "pip_freeze.txt", "comparison.png",
@@ -88,9 +91,10 @@ def test_default_bundle_has_all_files_and_real_environment(session, tmp_path):
     report = json.loads(paths["report.json"].read_text(encoding="utf-8"))
     assert report["events"][1]["note"] == session.events[1].note
     assert paths["comparison.png"].read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
-    assert "numpy==" in paths["pip_freeze.txt"].read_text()
-    assert "Python:" in paths["environment.txt"].read_text()
-    assert sys.executable in paths["environment.txt"].read_text()
+    freeze_lines = paths["pip_freeze.txt"].read_text(encoding="utf-8").splitlines()
+    assert any(line.startswith(("numpy==", "numpy @ ")) for line in freeze_lines)
+    assert "Python:" in paths["environment.txt"].read_text(encoding="utf-8")
+    assert sys.executable in paths["environment.txt"].read_text(encoding="utf-8")
 
 
 def test_reproduction_reruns_real_detectors_after_bundle_is_moved(session, tmp_path):
@@ -101,7 +105,7 @@ def test_reproduction_reruns_real_detectors_after_bundle_is_moved(session, tmp_p
     assert completed.returncode == 0, completed.stderr
     assert "Reproduced scores for 2" in completed.stdout
     expected = build_report(session)["scores"]
-    actual = json.loads((folder / "reproduced_scores.json").read_text())
+    actual = json.loads((folder / "reproduced_scores.json").read_text(encoding="utf-8"))
     assert actual == {"scores": expected, "skipped": {}}
 
 
@@ -109,9 +113,9 @@ def test_script_reports_mismatches_instead_of_claiming_success(session, tmp_path
     folder = tmp_path / "bundle"
     minimal_export(session, folder)
     path = folder / "report.json"
-    report = json.loads(path.read_text())
+    report = json.loads(path.read_text(encoding="utf-8"))
     report["scores"]["pelt"]["f1"] = -1
-    path.write_text(json.dumps(report))
+    path.write_text(json.dumps(report), encoding="utf-8")
     completed = run_script(folder, tmp_path)
     assert completed.returncode != 0
     assert "Reproduced scores differ" in completed.stderr
@@ -126,13 +130,13 @@ def test_failed_timed_out_and_cancelled_runs_are_saved_and_skipped(session, tmp_
     session.detectors.append(make_default_spec("window"))
     folder = tmp_path / "bundle"
     paths = minimal_export(session, folder)
-    report = json.loads(paths["report.json"].read_text())
+    report = json.loads(paths["report.json"].read_text(encoding="utf-8"))
     for key in ("ecod", "lof", "ocsvm"):
         assert report["scores"][key] is None
         assert report["results"][key]["error"] == "reason"
     completed = run_script(folder, tmp_path)
     assert completed.returncode == 0, completed.stderr
-    actual = json.loads((folder / "reproduced_scores.json").read_text())
+    actual = json.loads((folder / "reproduced_scores.json").read_text(encoding="utf-8"))
     assert set(actual["scores"]) == {"pelt", "iforest"}
     assert actual["skipped"] == {"ecod": "failed", "lof": "timed_out", "ocsvm": "cancelled"}
 
@@ -163,10 +167,10 @@ def test_minimal_report_only_and_empty_existing_folder(session, tmp_path):
 
 def test_nonempty_destination_is_never_overwritten(session, tmp_path):
     path = tmp_path / "notes.txt"
-    path.write_text("Keep this")
+    path.write_text("Keep this", encoding="utf-8")
     with pytest.raises(FileExistsError, match="empty"):
         export_session(session, tmp_path)
-    assert path.read_text() == "Keep this"
+    assert path.read_text(encoding="utf-8") == "Keep this"
     assert list(tmp_path.iterdir()) == [path]
     with pytest.raises(FileExistsError):
         export_session(session, path)
@@ -289,7 +293,7 @@ def test_plot_and_report_share_snapshot_if_state_changes_during_export(session, 
     monkeypatch.setattr(export, "_pip_freeze", change_state)
     monkeypatch.setattr(plotting, "build_comparison_figure", capture_figure)
     paths = export_session(session, tmp_path / "bundle")
-    report = json.loads(paths["report.json"].read_text())
+    report = json.loads(paths["report.json"].read_text(encoding="utf-8"))
     assert captured["values"] == report["signal"]["values"]
     assert captured["keys"] == list(report["results"])
     assert [asdict(event) for event in captured["events"]] == report["events"]
