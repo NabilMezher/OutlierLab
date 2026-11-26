@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add portable session exports with JSON signal/settings snapshots, a verified
+  reproduction script, environment and pip freeze capture, and a comparison PNG.
 - Add GUI-independent comparison figures with signal and detector rows,
   scoring-based alarm colors, detector selection, sample zoom and PNG export support.
 - Add event-level alarm matching and scoring for completed detector runs,
