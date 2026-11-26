@@ -21,7 +21,7 @@ class SettingsWindow(ctk.CTkToplevel):
         self.on_save = on_save
 
         self.title("Settings")
-        self.geometry("380x230")
+        self.geometry("380x270")
         self.resizable(False, False)
         self.transient(master)
         self.grab_set()
