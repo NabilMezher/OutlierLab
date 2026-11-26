@@ -205,11 +205,22 @@ tab.refresh()
 wait()
 assert "No ground truth" in tab.summary_label.cget("text")
 assert not tab.tree.set("pelt", "f1").startswith("* ")
-root.geometry("1180x720")
-root.deiconify()
-root.update()
-assert tab.tree.winfo_width() > 1000
-assert tab.detail_label.winfo_rooty() + tab.detail_label.winfo_height() <= root.winfo_rooty() + root.winfo_height()
+# Window managers may constrain the requested size to the desktop. Check
+# the actual client area, including a smaller window, rather than assuming
+# a fixed pixel width is available on every CI runner or DPI setting.
+for geometry in ("1180x720", "820x600"):
+    root.geometry(geometry)
+    root.deiconify()
+    root.update()
+    left = tab.tree.winfo_rootx() - root.winfo_rootx()
+    assert tab.tree.winfo_width() > 0
+    assert 0 <= left < root.winfo_width()
+    assert left + tab.tree.winfo_width() <= root.winfo_width()
+    assert tab.detail_label.winfo_rooty() + tab.detail_label.winfo_height() <= root.winfo_rooty() + root.winfo_height()
+    assert tab.tree.cget("xscrollcommand")
+    tab.tree.xview_moveto(1)
+    root.update()
+    assert tab.tree.xview()[1] == 1.0
 state.data = None
 tab.refresh()
 assert not tab.tree.get_children() and not state.scores
