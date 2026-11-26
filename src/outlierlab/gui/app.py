@@ -7,6 +7,7 @@ from outlierlab.gui.compare_tab import CompareTab
 from outlierlab.gui.data_tab import DataTab
 from outlierlab.gui.detectors_tab import DetectorsTab
 from outlierlab.gui.events_tab import EventsTab
+from outlierlab.gui.export_tab import ExportTab
 from outlierlab.gui.run_tab import RunTab
 from outlierlab.gui.scores_tab import ScoresTab
 from outlierlab.gui.settings_window import SettingsWindow
@@ -66,10 +67,8 @@ class App(ctk.CTk):
         self.tab_frames["Scores"] = ScoresTab(self.tabs.tab("Scores"), self)
         self.tab_frames["Scores"].pack(fill="both", expand=True)
 
-        for name in ("Export",):
-            ctk.CTkLabel(self.tabs.tab(name), text=f"{name} tab coming soon").pack(
-                pady=40
-            )
+        self.tab_frames["Export"] = ExportTab(self.tabs.tab("Export"), self)
+        self.tab_frames["Export"].pack(fill="both", expand=True)
 
     def _open_settings(self) -> None:
         SettingsWindow(self, self.app_state, on_save=self.refresh_all)

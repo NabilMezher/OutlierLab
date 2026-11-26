@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add the Export tab with file options, a destination picker, copyable session
+  previews and background writing of portable session bundles.
 - Add the Scores tab with numeric sorting, best values marked within detector
   type, run-status details and background scoring. Clear old results when the
   value column or missing-value policy changes.

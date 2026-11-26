@@ -1,5 +1,39 @@
 # Exporting a session
 
+The Export tab saves a portable snapshot through the same IO API used by
+scripts. It is connected to the app as the seventh tab.
+
+## Export from the GUI
+
+1. Finish a detector run. If you changed the signal, seed or detector
+   parameters afterward, rerun the detectors before exporting.
+2. Open Export and wait for the session preview. Export is disabled while
+   detectors are running or a preview is being prepared.
+3. Select the optional reproduction script, environment details, pip freeze
+   and comparison PNG. The JSON report is always included.
+4. Inspect Summary, JSON or Python script. Copy preview copies the complete
+   selected text, even when a long JSON preview is shortened on screen.
+5. Choose a new or empty destination folder and click Export session.
+6. After export finishes, run the generated script using the matching Python
+   environment to verify the saved scores.
+
+The preview captures detached data, events, settings and results. Export uses
+that snapshot, so edits made in other tabs during writing cannot change the
+saved analysis. If the current session changes, refresh its preview before
+starting another export. The output timestamp is recorded when saving.
+
+Preparation, environment capture and writing run in a worker thread. Errors
+appear in the tab, and the controls become available for another attempt.
+The destination rule prevents accidental overwrites. An export without any
+detector results is allowed, and its summary identifies it as a data/settings
+snapshot rather than a completed analysis.
+
+The Python preview uses the same `reproduction_script()` function as the file
+writer. It expects `report.json` beside it. This script reproduces the final
+analysis snapshot; a chronological GUI action history is not recorded.
+
+## Core API
+
 `outlierlab.io.export` writes a portable session bundle without opening the
 GUI. It uses the same scoring and plotting functions as the core API.
 
@@ -94,4 +128,9 @@ Run the export checks with:
 
 ```sh
 python -m pytest tests/test_export.py
+python -m pytest tests/test_export_tab.py
 ```
+
+The GUI integration check loads a CSV, marks events, runs PELT and IForest
+through Run, exports through Export, removes the source CSV, moves the bundle
+and verifies that the generated script reproduces the GUI scores.
