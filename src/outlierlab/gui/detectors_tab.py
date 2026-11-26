@@ -28,7 +28,7 @@ class DetectorsTab(ctk.CTkFrame):
         self.app = app
         self.selected_idx: int = 0
         self._preview_after_id: str | None = None
-        self._canvas: FigureCanvasTkAgg | None = None
+        self._preview_canvas: FigureCanvasTkAgg | None = None
 
         if not self.app.app_state.detectors:
             self.app.app_state.detectors = [make_default_spec(k) for k in DEFAULT_KEYS]
@@ -160,7 +160,7 @@ class DetectorsTab(ctk.CTkFrame):
     def _build_detail_panel(self) -> None:
         for child in self.output.winfo_children():
             child.destroy()
-        self._canvas = None
+        self._preview_canvas = None
 
         specs = self.app.app_state.detectors
         if not specs:
@@ -361,4 +361,4 @@ class DetectorsTab(ctk.CTkFrame):
         canvas = FigureCanvasTkAgg(fig, master=self.preview_host)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
-        self._canvas = canvas
+        self._preview_canvas = canvas
