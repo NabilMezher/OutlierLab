@@ -17,7 +17,7 @@ TAB_NAMES = ["Data", "Events", "Detectors", "Run", "Compare", "Scores", "Export"
 class App(ctk.CTk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("Anomaly Comparator")
+        self.title("OutlierLab")
         self.geometry("1180x720")
         # Not "self.state": Tk windows already have a state() method.
         self.app_state = ComparatorState()
