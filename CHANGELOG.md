@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add the Scores tab with numeric sorting, best values marked within detector
+  type, run-status details and background scoring. Clear old results when the
+  value column or missing-value policy changes.
 - Add the Compare tab with background preparation, tolerance controls, detector
   visibility, a navigation toolbar and an overview strip for zooming.
 - Add portable session exports with JSON signal/settings snapshots, a verified

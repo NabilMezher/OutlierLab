@@ -7,6 +7,7 @@ from outlierlab.gui.compare_tab import CompareTab
 from outlierlab.gui.data_tab import DataTab
 from outlierlab.gui.detectors_tab import DetectorsTab
 from outlierlab.gui.run_tab import RunTab
+from outlierlab.gui.scores_tab import ScoresTab
 from outlierlab.gui.settings_window import SettingsWindow
 
 TAB_NAMES = ["Data", "Events", "Detectors", "Run", "Compare", "Scores", "Export"]
@@ -45,7 +46,7 @@ class App(ctk.CTk):
         self.seed_chip = ctk.CTkLabel(header, text=f"Seed {self.app_state.seed}")
         self.seed_chip.pack(side="right", padx=6)
 
-        self.tabs = ctk.CTkTabview(self)
+        self.tabs = ctk.CTkTabview(self, command=self._on_tab_changed)
         self.tabs.pack(fill="both", expand=True, padx=10, pady=(0, 10))
         for name in TAB_NAMES:
             self.tabs.add(name)
@@ -59,14 +60,21 @@ class App(ctk.CTk):
         self.tab_frames["Run"].pack(fill="both", expand=True)
         self.tab_frames["Compare"] = CompareTab(self.tabs.tab("Compare"), self)
         self.tab_frames["Compare"].pack(fill="both", expand=True)
+        self.tab_frames["Scores"] = ScoresTab(self.tabs.tab("Scores"), self)
+        self.tab_frames["Scores"].pack(fill="both", expand=True)
 
-        for name in ("Events", "Scores", "Export"):
+        for name in ("Events", "Export"):
             ctk.CTkLabel(self.tabs.tab(name), text=f"{name} tab coming soon").pack(
                 pady=40
             )
 
     def _open_settings(self) -> None:
         SettingsWindow(self, self.app_state, on_save=self.refresh_all)
+
+    def _on_tab_changed(self) -> None:
+        frame = getattr(self, "tab_frames", {}).get(self.tabs.get())
+        if frame is not None and hasattr(frame, "refresh"):
+            frame.refresh()
 
     def refresh_all(self) -> None:
         """Call after the state changes so every tab can redraw."""

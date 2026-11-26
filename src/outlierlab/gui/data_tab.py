@@ -163,6 +163,7 @@ class DataTab(ctk.CTkFrame):
         if self.raw is None:
             return
         state = self.app.app_state
+        previous_analysis = (state.value_col, state.missing_policy)
         state.value_col = self.value_menu.get()
         state.missing_policy = self.missing.get()
 
@@ -174,6 +175,9 @@ class DataTab(ctk.CTkFrame):
         if state.missing_policy == "drop":
             cleaned = cleaned.dropna(subset=[state.value_col])
         state.data = cleaned
+        if previous_analysis != (state.value_col, state.missing_policy):
+            state.results.clear()
+            state.scores.clear()
 
         label_col = self.label_menu.get()
         if label_col != NO_LABELS and label_col != state.value_col:
