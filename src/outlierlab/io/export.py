@@ -233,6 +233,11 @@ if __name__ == "__main__":
 '''
 
 
+def reproduction_script() -> str:
+    """Return the script written beside report.json, for preview or copying."""
+    return _REPRODUCE_SCRIPT
+
+
 def _pip_freeze() -> bytes:
     try:
         completed = subprocess.run(
@@ -267,7 +272,7 @@ def export_session(
     report = build_report(state)
     payloads = {"report.json": _json_bytes(report)}
     if include_script:
-        payloads["reproduce_run.py"] = _REPRODUCE_SCRIPT.encode("utf-8")
+        payloads["reproduce_run.py"] = reproduction_script().encode("utf-8")
     if include_environment:
         environment = report["environment"]
         text = (
