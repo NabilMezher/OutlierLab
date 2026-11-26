@@ -241,6 +241,7 @@ from outlierlab.gui.app import App
 
 app = App()
 app.withdraw()
+assert {"Events", "Scores"}.issubset(app.tab_frames)
 errors = []
 app.report_callback_exception = lambda kind, value, tb: errors.append(str(value))
 data_tab = app.tab_frames["Data"]
