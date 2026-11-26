@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 import pandas as pd
 
 from outlierlab.core.detectors.base import DetectorSpec, RunResult
 from outlierlab.core.events import Event
+from outlierlab.core.metrics import Score
 
 
 @dataclass
@@ -27,7 +27,7 @@ class ComparatorState:
 
     # C: scoring
     tolerance: int = 6
-    scores: dict[str, Any] = field(default_factory=dict)
+    scores: dict[str, Score] = field(default_factory=dict)
 
     @property
     def series(self) -> pd.Series:
