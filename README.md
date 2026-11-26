@@ -7,3 +7,4 @@ Offline desktop tool for comparing time-series anomaly and changepoint detectors
 ## Team
 - Nabil Mezher (@nabilmezher)
 - Sira Sayyour (@sirasayyour2006)
+- George Levonian (@GeorgesxD21)
