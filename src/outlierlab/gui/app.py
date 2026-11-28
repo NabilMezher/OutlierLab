@@ -27,7 +27,7 @@ class App(ctk.CTk):
         header.pack(fill="x")
         ctk.CTkLabel(
             header,
-            text="Anomaly Comparator",
+            text="OutlierLab",
             text_color="#0062cc",
             font=ctk.CTkFont(size=16, weight="bold"),
         ).pack(side="left", padx=12, pady=6)
